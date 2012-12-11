@@ -1,0 +1,8 @@
+hea1 str4 sta4 spe8 san-9 man2 wea6
+hea0 str3 sta-5 spe7 san9 man2 wea6
+hea1 str3 sta5 spe7 san9 man2 wea6
+hea-1 str2 sta5 spe7 san-9 man2 wea6
+hea0 str3 sta5 spe7 san9 man2 wea6
+hea1 str3 sta5 spe8 san9 man2 wea6
+hea1 str5 sta5 spe7 san9 man-2 wea6
+hea1 str3 sta-5 spe7 san9 man2 wea6
