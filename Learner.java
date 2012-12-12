@@ -25,30 +25,14 @@ public class Learner {
             String word = inFile.readString();
             addWord(map, word, 1, "add");
         }
-        /*
-        String line;
-        try {
-            FileReader fr = new FileReader(file);
-            BufferedReader br = new BufferedReader(fr);
-            while ((line = br.readLine()) != null) {
-                processLine(line, map);
-            }
-        }
-        catch(IOException e01) {
-        }
-        */
     }
 
-    public static void dumpCorpus(Hashtable dump, String file) throws IOException {
-        Enumeration e = dump.keys();
-        try {
-            while(e.hasMoreElements()) {
-                String element = (String)e.nextElement();
-                FileWriter fw = new FileWriter(file);
-                BufferedWriter bw = new BufferedWriter(fw);
-            }
-        }
-        catch(IOException e02) {
+    public static void dumpCorpus(Hashtable map, String file) throws IOException {
+        Enumeration e = map.keys();
+        Out outFile = new Out(file);
+        while(e.hasMoreElements()) {
+            String key = (String) e.nextElement();
+            outFile.println(key + " : " + map.get(key));
         }
     }
 
@@ -152,13 +136,13 @@ public class Learner {
         }
 
         corpCMap = compositeMap(corpDMap, corpUMap);
-/*
+
         try {
             dumpCorpus(corpCMap, "aMem.txt");
         }
         catch(IOException e02) {
             System.out.println("Error writing memory file.");
-        } */
+        }
     }
 }
 
