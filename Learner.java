@@ -124,6 +124,7 @@ public class Learner {
     }
 
     public static void main(String[] args) {
+        FileFactory ff = new FileFactory();
         Learner al = new Learner();
         try {
             processCorpus(corpDMap, "corpD.txt");
