@@ -1,3 +1,8 @@
 .DS_Store
 
 *.class
+
+corpD.txt
+corpU.txt
+env.txt
+aMem.txt
