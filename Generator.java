@@ -1,12 +1,29 @@
 import java.util.Random;
 
-public class FileFactory {
+public class Generator {
 
-    public FileFactory() {
-        Out dFile = new Out("corpD.txt");
-        Out uFile = new Out("corpU.txt");
-        Out eFile = new Out("env.txt");
+    Out dFile;
+    Out uFile;
+    Out eFile;
 
+    public Generator() {
+        dFile = new Out("corpD.txt");
+        uFile = new Out("corpU.txt");
+        eFile = new Out("env.txt");
+    }
+
+    private static void printStats(int max, int min, Out file, Random rand) {
+        file.println(
+            "hea" + (rand.nextInt(max - min + 1) + min) + " " +
+            "str" + (rand.nextInt(max - min + 1) + min) + " " +
+            "sta" + (rand.nextInt(max - min + 1) + min) + " " +
+            "spe" + (rand.nextInt(max - min + 1) + min) + " " +
+            "san" + (rand.nextInt(max - min + 1) + min) + " " +
+            "man" + (rand.nextInt(max - min + 1) + min) + " " +
+            "wea" + (rand.nextInt(max - min + 1) + min));
+    }
+
+    public static void generate() {
         Random rand = new Random();
         int min = 50;
         int max = 150;
@@ -39,19 +56,4 @@ public class FileFactory {
         }
     }
 
-    private static void printStats(int max, int min, Out file, Random rand) {
-        file.println(
-            "hea" + (rand.nextInt(max - min + 1) + min) + " " +
-            "str" + (rand.nextInt(max - min + 1) + min) + " " +
-            "sta" + (rand.nextInt(max - min + 1) + min) + " " +
-            "spe" + (rand.nextInt(max - min + 1) + min) + " " +
-            "san" + (rand.nextInt(max - min + 1) + min) + " " +
-            "man" + (rand.nextInt(max - min + 1) + min) + " " +
-            "wea" + (rand.nextInt(max - min + 1) + min));
-    }
-/*
-    public static void main(String[] args) {
-        FileFactory al = new FileFactory();
-    } */
 }
-
