@@ -5,11 +5,13 @@ public class Environment {
     Random rand;
     Graph graph;
     Action[] actions;
+    int size;
 
     public Environment(int cSize, int eSize) {
         genRandCorpus(cSize);
-        genRandGraph(eSize);
-        genRandActions(eSize);
+        genRandGraph();
+        genRandActions();
+        size = eSize;
     }
 
     private void genRandCorpus(int cSize) {
@@ -46,19 +48,21 @@ public class Environment {
             "san" + (rand.nextInt(max - min + 1) + min) + " " +
             "man" + (rand.nextInt(max - min + 1) + min) + " " +
             "wea" + (rand.nextInt(max - min + 1) + min));
-    }
+   }
 
-    private void genRandGraph(int eSize) {
+    private void genRandGraph() {
         // create graph of integer nodes
-        graph = new Graph(eSize, eSize);
+        graph = new Graph(size, size);
+        System.out.println("ACTION GRAPH CREATED");
     }
 
-    private void genRandActions(int eSize) {
+    private void genRandActions() {
         //create array of actions (corresponding to nodes in graph)
-        actions = new Action[eSize];
+        actions = new Action[size];
 
-        for(int i = 0; i < eSize; i++) {
+        for(int i = 0; i < size; i++) {
             actions[i] = new Action();
+            System.out.println("new possible action available!");
         }
     }
 }
