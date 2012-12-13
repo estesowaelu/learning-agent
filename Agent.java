@@ -1,6 +1,11 @@
 public class Agent {
 
-    public static void main(String[] args) {
+	public Agent() {
+		// stuff
+	}
 
-    }
+	public static void choose() {
+		// more stuff
+	}
+
 }

@@ -16,4 +16,5 @@ public class Action {
         aMana = m;
         aWealth = w;
     }
+
 }

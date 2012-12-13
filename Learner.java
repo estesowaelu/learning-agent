@@ -1,7 +1,3 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -9,6 +5,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 public class Learner {
+
     private static Hashtable corpDMap;
     private static Hashtable corpUMap;
     private static Hashtable corpCMap;
@@ -19,7 +16,7 @@ public class Learner {
         corpCMap = new Hashtable();
     }
 
-    public static void processCorpus(Hashtable map, String file) throws IOException {
+    private static void processCorpus(Hashtable map, String file) throws IOException {
         In inFile = new In(file);
         while(!inFile.isEmpty()) {
             String word = inFile.readString();
@@ -27,7 +24,7 @@ public class Learner {
         }
     }
 
-    public static void dumpCorpus(Hashtable map, String file) throws IOException {
+    private static void dumpCorpus(Hashtable map, String file) throws IOException {
         Enumeration e = map.keys();
         Out outFile = new Out(file);
         while(e.hasMoreElements()) {
@@ -68,7 +65,8 @@ public class Learner {
         }
         System.out.println(com + " word to hash: " + word + " (index " + d + ")");
     }
-    public static Hashtable compositeMap(Hashtable DMap, Hashtable UMap) {
+
+    private static Hashtable compositeMap(Hashtable DMap, Hashtable UMap) {
         Hashtable sHash = new Hashtable();
         Enumeration enumD = DMap.keys();
         Enumeration enumU = UMap.keys();
@@ -123,27 +121,15 @@ public class Learner {
         return tHash;
     }
 
-    public static void main(String[] args) {
-        FileFactory ff = new FileFactory();
-        Learner al = new Learner();
-        try {
-            processCorpus(corpDMap, "corpD.txt");
-            System.out.println("=========================");
-            processCorpus(corpUMap, "corpU.txt");
-            System.out.println("=========================");
-        }
-        catch(IOException e01) {
-            System.out.println("Error reading corpus files.");
-        }
+    public static void learn(String fileD, String fileU, String fileM) {
+        processCorpus(corpDMap, fileD);
+        System.out.println("=========================");
+        processCorpus(corpUMap, fileU);
+        System.out.println("=========================");
 
         corpCMap = compositeMap(corpDMap, corpUMap);
 
-        try {
-            dumpCorpus(corpCMap, "aMem.txt");
-        }
-        catch(IOException e02) {
-            System.out.println("Error writing memory file.");
-        }
+        dumpCorpus(corpCMap, fileM);
     }
-}
 
+}
