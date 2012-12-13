@@ -2,37 +2,47 @@ import java.util.Random;
 
 public class Action {
 
-    private int aHealth;
-    private int aStrength;
-    private int aStamina;
-    private int aSpeed;
-    private int aSanity;
-    private int aMana;
-    private int aWealth;
+    String[] strFactors;
+    int[] intFactors;
+/*
+    private String sHealth;
+    private String sStrength;
+    private String sStamina;
+    private String sSpeed;
+    private String sSanity;
+    private String sMana;
+    private String sWealth;
+
+    private int iHealth;
+    private int iStrength;
+    private int iStamina;
+    private int iSpeed;
+    private int iSanity;
+    private int iMana;
+    private int iWealth;
+*/
 
     public Action() {
         Random rand = new Random();
         int max = 10;
         int min = -10;
 
-        aHealth = rand.nextInt(max - min + 1) + min;
-        aStrength = rand.nextInt(max - min + 1) + min;
-        aStamina = rand.nextInt(max - min + 1) + min;
-        aSpeed = rand.nextInt(max - min + 1) + min;
-        aSanity = rand.nextInt(max - min + 1) + min;
-        aMana = rand.nextInt(max - min + 1) + min;
-        aWealth = rand.nextInt(max - min + 1) + min;
+        intFactors[0]   = (rand.nextInt(max - min + 1) + min);
+        intFactors[1]   = (rand.nextInt(max - min + 1) + min);
+        intFactors[2]   = (rand.nextInt(max - min + 1) + min);
+        intFactors[3]   = (rand.nextInt(max - min + 1) + min);
+        intFactors[4]   = (rand.nextInt(max - min + 1) + min);
+        intFactors[5]   = (rand.nextInt(max - min + 1) + min);
+        intFactors[6]   = (rand.nextInt(max - min + 1) + min);
 
-    }
+        strFactors[0]   = "hea" +   intFactors[0];
+        strFactors[1]   = "str" +   intFactors[1];
+        strFactors[2]   = "sta" +   intFactors[2];
+        strFactors[3]   = "spe" +   intFactors[3];
+        strFactors[4]   = "san" +   intFactors[4];
+        strFactors[5]   = "man" +   intFactors[5];
+        strFactors[6]   = "wea" +   intFactors[6];
 
-    public Action(int h, int s1, int s2, int s3, int s4, int m, int w) {
-        aHealth = h;
-        aStrength = s1;
-        aStamina = s2;
-        aSpeed = s3;
-        aSanity = s4;
-        aMana = m;
-        aWealth = w;
     }
 
 }
