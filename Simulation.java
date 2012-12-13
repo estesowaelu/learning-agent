@@ -8,7 +8,7 @@ public class Simulation {
 
     public Simulation(int cSize, int eSize) {
         environment = new Environment(cSize, eSize);
-        agent = new Agent();
+        agent = new Agent(eSize);
     }
 
     public static void main(String[] args) {
@@ -18,6 +18,8 @@ public class Simulation {
         int cSize = in.readInt();
         System.out.println("How big should the environment be?");
         int eSize = in.readInt();
+        System.out.println("How many moves should the agent make?");
+        int moves = in.readInt();
 
         // make a new simulation with the given sizes
         Simulation simulation = new Simulation(cSize, eSize);
@@ -26,7 +28,7 @@ public class Simulation {
         agent.learn(environment);
 
         // make the agent choose the best path through the environment
-//        agent.choose(environment);
+        agent.choose(environment, moves);
     }
 
 }
