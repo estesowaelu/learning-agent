@@ -1,31 +1,32 @@
 // Master program
 /////////////////////////////////////////////////////////////
-// 1. instantiate Generator, to build basis files for unique simulation
-// 2. instantiate Learner, to process files into a cohesive memory
-// 3. instantiate Environment, to build graph of available Actions
-// 4. instantiate Agent, to traverse graph and choose the best path
 
 public class Simulation {
 
-    Generator generator;
-    Learner learner;
-    Environment environment;
-    Agent agent;
+    static Environment environment;
+    static Agent agent;
 
-    public Simulation() {
-        generator = new Generator();
-        learner = new Learner();
-        environment = new Environment();
+    public Simulation(int cSize, int eSize) {
+        environment = new Environment(cSize, eSize);
         agent = new Agent();
     }
 
     public static void main(String[] args) {
-        Simulation simulation = new Simulation;
+        // get input from command line for c and e
+        In in = new In();
+        System.out.println("How big should the corpi be?");
+        int cSize = in.readInt();
+        System.out.println("How big should the environment be?");
+        int eSize = in.readInt();
 
-        generator.generate();
-        learner.learn();
-        environment.build();
-        agent.choose();
+        // make a new simulation with the given sizes
+        Simulation simulation = new Simulation(cSize, eSize);
+
+        // let the agent learn about the environment
+        agent.learn(environment);
+
+        // make the agent choose the best path through the environment
+//        agent.choose(environment);
     }
 
 }
