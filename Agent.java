@@ -1,8 +1,10 @@
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.Random;
 
 public class Agent {
 
@@ -10,11 +12,34 @@ public class Agent {
 	private static Hashtable corpUMap;
 	private static Hashtable corpCMap;
 
-	public Agent() {
+	private static int health;
+	private static int strength;
+	private static int stamina;
+	private static int speed;
+	private static int sanity;
+	private static int mana;
+	private static int wealth;
+
+	int[] visited;
+	static int location;
+
+	static Random rand = new Random();
+
+	public Agent(int eSize) {
 		// stuff
 		corpDMap = new Hashtable();
 		corpUMap = new Hashtable();
 		corpCMap = new Hashtable();
+
+		visited = new int[eSize];
+
+		health = 10;
+		strength = 10;
+		stamina = 10;
+		speed = 10;
+		sanity = 10;
+		mana = 10;
+		wealth = 10;
 	}
 
 	private static void processCorpus(Hashtable map, String file) throws IOException {
@@ -136,10 +161,62 @@ public class Agent {
 		catch (IOException ioe) {
 		}
 
+		// drop agent at random node
+		location = rand.nextInt(environment.size);
 	}
 
-	public static void choose(Environment environment) {
-		// more stuff
+	public static void choose(Environment environment, int moves) {
+
+		printStats("Initial");
+
+		Action tmpAction;								// action currently being looked at
+		Object obj;										// obj being looked up in corpCMap
+		int bestActIndex = -1;							// best local graph index
+		int currActIndex = -1;							// graph index currently being looked at
+		double currFactor = 0.0;						// factor currently being looked at
+		double bestFactor = 0.0;						// best local factor
+
+		for(int i = 0; i < moves; i++) {								// make however many moves the user wanted
+			System.out.print("\nTraveling from " + location);
+
+			Iterable it = environment.graph.adj(location);				// get ready to look around a location
+			Iterator iter = it.iterator();
+
+			while(iter.hasNext()) {										// while there are more edges to explore
+				currActIndex = (Integer)iter.next();						// set the action index to the next one
+				tmpAction = environment.actions[currActIndex];			// get the action located at that index
+
+				for(int j = 0; j < 7; j++) {							// cycle through the attributes of that action
+					obj = corpCMap.get(tmpAction.strFactors[j]);		// for each attribute, see if it shows up on the corpCMap
+					if(obj != null) {
+						currFactor += tmpAction.intFactors[j];			// if it does, add it to the value factor
+					}
+				}
+
+				if(currFactor > bestFactor) {							// if its better than all previous edges on the node
+					bestFactor = currFactor;							// set it as the highest factor
+					bestActIndex = currActIndex;						// and mark that index as the best choice (so far)
+				}
+			}
+
+			location = bestActIndex;									// once all edges have been looked at, move to the best one
+
+			System.out.print(" to " + location + ".\n");
+			printStats("New");
+		}
+
+		printStats("Final");
+	}
+
+	public static void printStats(String type) {
+		System.out.println("\n" + type + " stats:"
+								+ " hea" + health
+								+ " str" + strength
+								+ " sta" + stamina
+								+ " spe" + speed
+								+ " san" + sanity
+								+ " man" + mana
+								+ " wea" + wealth);
 	}
 
 }
