@@ -2,44 +2,32 @@ import java.util.Random;
 
 public class Environment {
 
-    Random rand;
-    Graph graph;
-    Action[] actions;
-    int size;
+    protected Graph graph;
+    protected Action[] actions;
+    protected int size;
 
     public Environment(int cSize, int eSize) {
         genRandCorpus(cSize);
+        size = eSize;
         genRandGraph();
         genRandActions();
-        size = eSize;
     }
 
     private void genRandCorpus(int cSize) {
         Out dFile = new Out("data/corpD.txt");
         Out uFile = new Out("data/corpU.txt");
 
-        rand = new Random();
-
-        int min;
-        int max;
-
-        // print series of desirable states to corpD.txt
-        min = -7;
-        max = 10;
         for(int i = 0; i < cSize; i++) {
-            printStats(max, min, dFile);
+            // print series of desirable states to corpD.txt
+            printStats(10, -7, dFile);
+            // print series of undesirable states to corpU.txt
+            printStats(7, -10, uFile);
         }
-
-        // print series of undesirable states to corpU.txt
-        min = -10;
-        max = 7;
-        for(int i = 0; i < cSize; i++) {
-            printStats(max, min, uFile);
-        }
-
     }
 
     private void printStats(int max, int min, Out file) {
+        Random rand = new Random();
+
         file.println(
             "hea" + (rand.nextInt(max - min + 1) + min) + " " +
             "str" + (rand.nextInt(max - min + 1) + min) + " " +
@@ -52,7 +40,7 @@ public class Environment {
 
     private void genRandGraph() {
         // create graph of integer nodes
-        graph = new Graph(size, size);
+        graph = new Graph(size, 2 * size);
         System.out.println("ACTION GRAPH CREATED");
     }
 

@@ -20,18 +20,26 @@ public class Agent {
 	private static int mana;
 	private static int wealth;
 
-	int[] visited;
+	private static boolean[] visited;
+	private static boolean[] visitable;
 	static int location;
 
-	static Random rand = new Random();
+	static Random rand;
 
 	public Agent(int eSize) {
-		// stuff
 		corpDMap = new Hashtable();
 		corpUMap = new Hashtable();
 		corpCMap = new Hashtable();
 
-		visited = new int[eSize];
+		visited = new boolean[eSize];
+		visitable = new boolean[eSize];
+
+		for(int i = 0; i < eSize; i++) {
+			visited[i] = false;
+			visitable[i] = false;
+		}
+
+		rand = new Random();
 
 		health = 10;
 		strength = 10;
@@ -47,22 +55,6 @@ public class Agent {
 	    while(!inFile.isEmpty()) {
 	        String word = inFile.readString();
 	        addWord(map, word, 1, "add");
-	    }
-	}
-
-	private static void writeMemory(Hashtable map, String file) throws IOException {
-	    Enumeration e = map.keys();
-	    Out outFile = new Out(file);
-	    while(e.hasMoreElements()) {
-	        String key = (String) e.nextElement();
-	        outFile.println(key + " : " + map.get(key));
-	    }
-	}
-
-	private static void processLine(String line, Map map) {
-	    StringTokenizer st = new StringTokenizer(line);
-	    while (st.hasMoreTokens()) {
-	        addWord(map, st.nextToken(), 1, "add");
 	    }
 	}
 
@@ -147,6 +139,15 @@ public class Agent {
 	    return tHash;
 	}
 
+	private static void writeMemory(Hashtable map, String file) throws IOException {
+	    Enumeration e = map.keys();
+	    Out outFile = new Out(file);
+	    while(e.hasMoreElements()) {
+	        String key = (String) e.nextElement();
+	        outFile.println(key + " : " + map.get(key));
+	    }
+	}
+
 	public static void learn(Environment environment) {
 		try {
 		    processCorpus(corpDMap, "data/corpD.txt");
@@ -161,29 +162,31 @@ public class Agent {
 		catch (IOException ioe) {
 		}
 
-		// drop agent at random node
-		location = rand.nextInt(environment.size);
 	}
 
 	public static void choose(Environment environment, int moves) {
 
+		// drop agent at random node
+		location = rand.nextInt(environment.size);
+		System.out.println("\ndropping agent at: " + location);
+
 		printStats("Initial");
 
-		Action tmpAction;								// action currently being looked at
+		Action tmpAction = new Action();				// action currently being looked at
 		Object obj;										// obj being looked up in corpCMap
-		int bestActIndex = -1;							// best local graph index
-		int currActIndex = -1;							// graph index currently being looked at
+		int currActIndex = 0;							// graph index currently being looked at
+		int bestActIndex = 0;							// best local graph index
+		int backupActIndex = 0;
 		double currFactor = 0.0;						// factor currently being looked at
 		double bestFactor = 0.0;						// best local factor
 
 		for(int i = 0; i < moves; i++) {								// make however many moves the user wanted
-			System.out.print("\nTraveling from " + location);
-
 			Iterable it = environment.graph.adj(location);				// get ready to look around a location
 			Iterator iter = it.iterator();
 
 			while(iter.hasNext()) {										// while there are more edges to explore
-				currActIndex = (Integer)iter.next();						// set the action index to the next one
+				currActIndex = (Integer)iter.next();					// set the action index to the next one
+				System.out.println("\nconsidering node #" + currActIndex);
 				tmpAction = environment.actions[currActIndex];			// get the action located at that index
 
 				for(int j = 0; j < 7; j++) {							// cycle through the attributes of that action
@@ -193,19 +196,60 @@ public class Agent {
 					}
 				}
 
-				if(currFactor > bestFactor) {							// if its better than all previous edges on the node
-					bestFactor = currFactor;							// set it as the highest factor
-					bestActIndex = currActIndex;						// and mark that index as the best choice (so far)
+				// run through the available nodes
+				// for each one, if it is better, and not visited, make it optimal
+				// if it has been visited, but is better, mark it for backup
+				// once we've looked at them all, if we haven't found an optimal one, make the backup optimal
+
+				visitable[currActIndex] = true;
+
+				System.out.println("factor " + " = " + currFactor);
+
+				if(currFactor > bestFactor) {		// if its better than all previous edges on the node
+					if(!visited[currActIndex]) {
+						bestFactor = currFactor;								// set it as the highest factor
+						System.out.println("The best action factor has gotten better: " + bestFactor);
+						bestActIndex = currActIndex;							// and mark that index as the best choice (so far)
+						System.out.println("The best action to choose has changed to: " + bestActIndex);
+					}
+					else {
+						backupActIndex = currActIndex;
+					}
 				}
+
+				currFactor = 0.0;
 			}
 
+			bestFactor = -71.0;
+
+			if(bestActIndex < 0) {
+				bestActIndex = backupActIndex;
+			}
+
+			System.out.print("\nTraveling from " + location + " to " + bestActIndex + ".\n");
 			location = bestActIndex;									// once all edges have been looked at, move to the best one
+			visited[bestActIndex] = true;
 
-			System.out.print(" to " + location + ".\n");
-			printStats("New");
+			currActIndex = -1;
+			bestActIndex = -1;
+			backupActIndex = -1;
+
+			// update agent stats
+			health += tmpAction.intFactors[0];
+			strength += tmpAction.intFactors[1];
+			stamina += tmpAction.intFactors[2];
+			speed += tmpAction.intFactors[3];
+			sanity += tmpAction.intFactors[4];
+			mana += tmpAction.intFactors[5];
+			wealth += tmpAction.intFactors[6];
+
+			if(i == (moves - 1)) {
+				printStats("Final");
+			}
+			else {
+				printStats("New");
+			}
 		}
-
-		printStats("Final");
 	}
 
 	public static void printStats(String type) {
