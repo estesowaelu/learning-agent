@@ -41,7 +41,6 @@ public class Environment {
     private void genRandGraph() {
         // create graph of integer nodes
         graph = new Graph(size, 2 * size);
-        System.out.println("ACTION GRAPH CREATED");
     }
 
     private void genRandActions() {
@@ -50,7 +49,6 @@ public class Environment {
 
         for(int i = 0; i < size; i++) {
             actions[i] = new Action();
-            System.out.println("new possible action available!");
         }
     }
 }

@@ -26,6 +26,8 @@ public class Agent {
 
 	static Random rand;
 
+	static Out out;
+
 	public Agent(int eSize) {
 		corpDMap = new Hashtable();
 		corpUMap = new Hashtable();
@@ -40,6 +42,10 @@ public class Agent {
 		}
 
 		rand = new Random();
+
+		out = new Out("data/log.txt");
+
+		out.println("Agent created for environment of size " + eSize);
 
 		health = 10;
 		strength = 10;
@@ -68,7 +74,7 @@ public class Agent {
 	        i = ((Integer) obj).intValue() + freq;
 	        map.put(word, i);
 	    }
-	    System.out.println(com + " word to hash: " + word + " (index " + i + ")");
+	    out.println(com + " word to hash: " + word + " (index " + i + ")");
 	}
 
 	private static void addWord(Map map, String word, double freq, String com) {
@@ -78,10 +84,10 @@ public class Agent {
 	        d = freq;
 	        map.put(word, freq);
 	    } else {
-	        d = ((Double) obj).intValue() + freq;
+	        d = ((Double) obj).doubleValue() + freq;
 	        map.put(word, d);
 	    }
-	    System.out.println(com + " word to hash: " + word + " (index " + d + ")");
+	    out.println(com + " word to hash: " + word + " (index " + d + ")");
 	}
 
 	private static Hashtable compMap(Hashtable DMap, Hashtable UMap) {
@@ -99,7 +105,7 @@ public class Agent {
 	        int i = ((Integer) objD).intValue();
 	        addWord(sHash, element, i*2, "transfer");
 	    }
-	    System.out.println("=========================");
+	    out.println(">>>>>>>>>> desirable actions assimilated >>>>>>>>>>");
 
 	    // add elements from Undesirables
 	    while(enumU.hasMoreElements()) {
@@ -110,7 +116,7 @@ public class Agent {
 	        int i = ((Integer) objU).intValue();
 	        addWord(sHash, element, i, "transfer");
 	    }
-	    System.out.println("=========================");
+	    out.println(">>>>>>>>>> undesirable actions assimilated >>>>>>>>>>");
 
 	    Hashtable tHash = new Hashtable();
 	    Enumeration enumS = sHash.keys();
@@ -150,14 +156,22 @@ public class Agent {
 
 	public static void learn(Environment environment) {
 		try {
+			out.println(">>>>>>>>>> learning about desirability >>>>>>>>>>");
 		    processCorpus(corpDMap, "data/corpD.txt");
-		    System.out.println("=========================");
-		    processCorpus(corpUMap, "data/corpU.txt");
-		    System.out.println("=========================");
+		    out.println(">>>>>>>>>> desirable actions learned >>>>>>>>>>");
 
+		    out.println(">>>>>>>>>> learning about undesirability >>>>>>>>>>");
+		    processCorpus(corpUMap, "data/corpU.txt");
+		    out.println(">>>>>>>>>> undesirable actions learned >>>>>>>>>>");
+
+		    out.println(">>>>>>>>>> synthesizing action desirability probability hash >>>>>>>>>>");
 		    corpCMap = compMap(corpDMap, corpUMap);
+		    out.println(">>>>>>>>>> probabilities hashed >>>>>>>>>>");
 
 		    writeMemory(corpCMap, "data/aMem.txt");
+
+		    out.println(">>>>>>>>>> actions learned >>>>>>>>>>");
+
 		}
 		catch (IOException ioe) {
 		}
@@ -168,7 +182,7 @@ public class Agent {
 
 		// drop agent at random node
 		location = rand.nextInt(environment.size);
-		System.out.println("\ndropping agent at: " + location);
+		out.println("\n>>>>>>>>>> Dropping agent at node #" + location);
 
 		printStats("Initial");
 
@@ -186,13 +200,15 @@ public class Agent {
 
 			while(iter.hasNext()) {										// while there are more edges to explore
 				currActIndex = (Integer)iter.next();					// set the action index to the next one
-				System.out.println("\nconsidering node #" + currActIndex);
 				tmpAction = environment.actions[currActIndex];			// get the action located at that index
 
 				for(int j = 0; j < 7; j++) {							// cycle through the attributes of that action
 					obj = corpCMap.get(tmpAction.strFactors[j]);		// for each attribute, see if it shows up on the corpCMap
+					double d = ((Double) obj).doubleValue();
 					if(obj != null) {
-						currFactor += tmpAction.intFactors[j];			// if it does, add it to the value factor
+//						currFactor += tmpAction.intFactors[j];			// if it does, add it to the value factor
+						// look up its desirability factor and add it to the total action desirability factor
+						currFactor += ((Double) obj).doubleValue();
 					}
 				}
 
@@ -203,18 +219,21 @@ public class Agent {
 
 				visitable[currActIndex] = true;
 
-				System.out.println("factor " + " = " + currFactor);
+				out.println("...considering node #" + currActIndex + " (factor" + " = " + currFactor + ")");
 
 				if(currFactor > bestFactor) {		// if its better than all previous edges on the node
 					if(!visited[currActIndex]) {
 						bestFactor = currFactor;								// set it as the highest factor
-						System.out.println("The best action factor has gotten better: " + bestFactor);
 						bestActIndex = currActIndex;							// and mark that index as the best choice (so far)
-						System.out.println("The best action to choose has changed to: " + bestActIndex);
+						out.println("IMPROVED action factor found at node #" + bestActIndex);
 					}
 					else {
 						backupActIndex = currActIndex;
+						out.println("NO improvement in action factor.");
 					}
+				}
+				else {
+					out.println("NO improvement in action factor.");
 				}
 
 				currFactor = 0.0;
@@ -226,7 +245,7 @@ public class Agent {
 				bestActIndex = backupActIndex;
 			}
 
-			System.out.print("\nTraveling from " + location + " to " + bestActIndex + ".\n");
+			out.println("\n>>>>>>>>>> TRAVELING FROM #" + location + " to #" + bestActIndex + ".");
 			location = bestActIndex;									// once all edges have been looked at, move to the best one
 			visited[bestActIndex] = true;
 
@@ -253,14 +272,14 @@ public class Agent {
 	}
 
 	public static void printStats(String type) {
-		System.out.println("\n" + type + " stats:"
+		out.println("\n" + type + " stats:"
 								+ " hea" + health
 								+ " str" + strength
 								+ " sta" + stamina
 								+ " spe" + speed
 								+ " san" + sanity
 								+ " man" + mana
-								+ " wea" + wealth);
+								+ " wea" + wealth + "\n");
 	}
 
 }

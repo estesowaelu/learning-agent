@@ -14,11 +14,11 @@ public class Simulation {
     public static void main(String[] args) {
         // get input from command line for c and e
         In in = new In();
-        System.out.println("How big should the corpi be?");
+        System.out.print("How big should the corpi be? ");
         int cSize = in.readInt();
-        System.out.println("How big should the environment be?");
+        System.out.print("How big should the environment be? ");
         int eSize = in.readInt();
-        System.out.println("How many moves should the agent make?");
+        System.out.print("How many moves should the agent make? ");
         int moves = in.readInt();
 
         // make a new simulation with the given sizes
@@ -29,6 +29,8 @@ public class Simulation {
 
         // make the agent choose the best path through the environment
         agent.choose(environment, moves);
+
+        System.out.println("\nAgent log in ./data/log.txt");
     }
 
 }
