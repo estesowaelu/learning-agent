@@ -1,13 +1,19 @@
 learning-agent
 ==============
-Compilation: javac *.java
+Compilation:
 
-Execution: java Simulation
+	javac *.java
+
+Execution:
+
+	java Simulation
 
 The program will prompt the user for three variables:
 
 1. C: the size of the corpus on which to train the agent. The agent will be shown C "desirable" actions and C "undesirable" actions. Each action has 7 effects, so the agent will be shown a total of C*14 effects.
+
 2. V: the size of the environment into which the trained agent is placed. The graph will contain V nodes, and V*2 edges.
+
 3. M: the number of moves the agent will be required to make. The agent will traverse M edges, resolving the effects of M actions.
 
 The program will first create an environment. This involves creating 2 corpus files in the ./data directory (corpD.txt and corpU.txt), and a virtual action graph.
