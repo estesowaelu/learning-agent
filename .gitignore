@@ -2,7 +2,4 @@
 
 *.class
 
-corpD.txt
-corpU.txt
-aMem.txt
-log.txt
+data/*
