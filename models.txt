@@ -1,0 +1,25 @@
+/*
+Models:
+    - Sexual/Reproductive model
+        sex                     string, [m, f, t, i, a]
+        gender                  string, [cis, trans, bi, queer]
+        orientation             string, [straight, gay, bi, pan, a]
+        arousal                 int, 0-10
+    - Dietary model
+        diet                    string, [herb, carn, omni]
+        hunger                  int, 0-10
+    - Friendship/Aggression model
+        prestige                int, 0+
+        demeanor                int, (-10, 10)
+        aggression              int, (-10, 10)
+    - Health model
+        age                     int, 0+
+        size                    int, 0+
+        sanity                  int, 0-10
+        happiness               int, 0-100
+        health                  int, 0-100
+    - Motion model
+        speed                   int, 0+
+        strength                int, 0-100
+        stamina                 int, 0-100
+*/
