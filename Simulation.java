@@ -31,6 +31,8 @@ public class Simulation {
         agent.choose(environment, moves);
 
         System.out.println("\nAgent log in ./data/log.txt");
+
+//        System.out.println("\n\nOh... and uh... hello. World.\n");
     }
 
 }
